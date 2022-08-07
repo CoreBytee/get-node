@@ -1,1 +1,1 @@
-p(Import("ga.corebyte.get-node")())
+p(Import("ga.corebyte.get-node").Download())
