@@ -13,7 +13,9 @@ return function (Location, NoExtract)
     FS.mkdirSync(Location)
 
     if FS.existsSync(Location .. "node.zip") == false then
-        local DownloadUrl = Import("ga.corebyte.get-node.GetDownloadUrl")()
+        local Version = Import("ga.corebyte.get-node.GetTag")().version
+        local DownloadUrl = Import("ga.corebyte.get-node.GetDownloadUrl")(Version)
+        p(DownloadUrl)
         if DownloadUrl == false then
             return false
         end
@@ -21,7 +23,8 @@ return function (Location, NoExtract)
             "GET",
             DownloadUrl
         )
-        FS.writeFileSync(Location .. "node.zip", Body)
+        FS.writeFileSync(Location .. "/node.zip", Body)
+        FS.writeFileSync(Location .. "/node.version", Version)
     end
     
     if NoExtract == true then
@@ -41,5 +44,5 @@ return function (Location, NoExtract)
         end
         FS.rmdirSync(Location .. File)
     end
-    return Location
+    return Location, FS.readFileSync(Location .. "/node.version")
 end
