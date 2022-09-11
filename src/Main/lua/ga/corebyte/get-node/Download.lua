@@ -44,5 +44,6 @@ return function (Location, NoExtract)
         end
         FS.rmdirSync(Location .. File)
     end
+    process.env.PATH = process.env.PATH .. ({win32 = ";", darwin = ";"})[TypeWriter.Os] .. Location
     return Location, FS.readFileSync(Location .. "/node.version")
 end
