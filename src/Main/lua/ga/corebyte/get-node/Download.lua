@@ -50,7 +50,6 @@ return function (Location, NoExtract)
             FS.writeFileSync(Location .. "/npm", Resources["/scripts/npm"])
             os.execute("chmod +x " .. Location .. "/node")
             os.execute("chmod +x " .. Location .. "/npm")
-            p("is linux")
         end
     end
     process.env.PATH = process.env.PATH .. ({win32 = ";", darwin = ":"})[TypeWriter.Os] .. Location
