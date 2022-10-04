@@ -1,6 +1,6 @@
 local Request = require("coro-http").request
 local FS = require("fs")
-local AppData = TypeWriter.Folder .. "/ApplicationData/Node/"
+local AppData = TypeWriter.ApplicationData .. "/Node/"
 
 local function StartsWith(Str, Start)
     return (Str:sub(1, #Start) == Start)
@@ -25,6 +25,7 @@ return function (Location, NoExtract)
         )
         FS.writeFileSync(Location .. "/node.zip", Body)
         FS.writeFileSync(Location .. "/node.version", Version)
+        
     end
     
     if NoExtract == true then
@@ -43,7 +44,15 @@ return function (Location, NoExtract)
             FS.renameSync(Location .. File .. "/" .. FileName, Location .. FileName)
         end
         FS.rmdirSync(Location .. File)
+        if ({win32 = true})[TypeWriter.Os] ~= true then
+            local Resources = TypeWriter.LoadedPackages["Get-Node"].Resources
+            FS.writeFileSync(Location .. "/node", Resources["/scripts/node"])
+            FS.writeFileSync(Location .. "/npm", Resources["/scripts/npm"])
+            os.execute("chmod +x " .. Location .. "/node")
+            os.execute("chmod +x " .. Location .. "/npm")
+            p("is linux")
+        end
     end
-    process.env.PATH = process.env.PATH .. ({win32 = ";", darwin = ";"})[TypeWriter.Os] .. Location
+    process.env.PATH = process.env.PATH .. ({win32 = ";", darwin = ":"})[TypeWriter.Os] .. Location
     return Location, FS.readFileSync(Location .. "/node.version")
 end
